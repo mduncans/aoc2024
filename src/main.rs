@@ -3,7 +3,7 @@ use clap::Parser;
 
 fn main() {
     let args = args::Args::parse();
-    let result = days::day1::solve(args.input).unwrap();
+    let result = days::day1::solve(args.input, &args.part).unwrap();
 
     println!("{}", result);
 }

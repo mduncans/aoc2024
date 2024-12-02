@@ -51,10 +51,32 @@ fn compute_total_distance(
     Ok(result)
 }
 
-pub fn solve(input: PathBuf) -> anyhow::Result<i64> {
-    let contents = read_input(input).unwrap();
-    let (lr, rr) = parse_contents(&contents).unwrap();
-    let result = compute_total_distance(lr, rr)?;
+fn compute_similarity_score(left_list: Vec<i64>, right_list: Vec<i64>) -> anyhow::Result<i64> {
+    let mut result: i64 = 0;
+
+    for id in left_list.into_iter() {
+        result += id * right_list.iter().filter(|&x| x == &id).count() as i64;
+    }
 
     Ok(result)
+}
+
+pub fn solve(input: PathBuf, part: &str) -> anyhow::Result<i64> {
+    let contents = read_input(input).unwrap();
+    let (lr, rr) = parse_contents(&contents).unwrap();
+
+    match part {
+        "a" => {
+            let distance = compute_total_distance(lr, rr)?;
+            Ok(distance)
+        }
+        "b" => {
+            let similarity = compute_similarity_score(lr, rr)?;
+            Ok(similarity)
+        }
+        _ => {
+            let distance = compute_total_distance(lr, rr)?;
+            Ok(distance)
+        }
+    }
 }

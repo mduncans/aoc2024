@@ -7,4 +7,8 @@ pub struct Args {
     // Path to input data
     #[arg(short, long)]
     pub input: PathBuf,
+
+    // Problem part - a or b
+    #[arg(short, long, default_value = "a")]
+    pub part: String,
 }
