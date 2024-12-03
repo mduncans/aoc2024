@@ -26,4 +26,5 @@ pub struct Args {
 pub enum Commands {
     Day1,
     Day2,
+    Day3,
 }
