@@ -1,5 +1,5 @@
-use anyhow;
 use crate::core::read;
+use anyhow;
 use std::{iter::zip, path::PathBuf};
 
 fn parse_contents(contents: &str) -> anyhow::Result<(Vec<i64>, Vec<i64>)> {
