@@ -8,6 +8,7 @@ fn main() {
     let result = match command {
         args::Commands::Day1 => days::day1::solve(args.input, &args.part).unwrap(),
         args::Commands::Day2 => days::day2::solve(args.input, &args.part).unwrap(),
+        args::Commands::Day3 => days::day3::solve(args.input, &args.part).unwrap(),
     };
 
     println!("{}", result);
