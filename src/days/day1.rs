@@ -1,14 +1,6 @@
 use anyhow;
-use std::{fs, iter::zip, path::PathBuf};
-
-fn read_input(input: PathBuf) -> anyhow::Result<String> {
-    let contents = match fs::read_to_string(&input) {
-        Ok(c) => c,
-        Err(e) => anyhow::bail!("Failed to read input: {:?}. Error: {:?}", &input, e),
-    };
-
-    Ok(contents)
-}
+use crate::core::read;
+use std::{iter::zip, path::PathBuf};
 
 fn parse_contents(contents: &str) -> anyhow::Result<(Vec<i64>, Vec<i64>)> {
     let parsed_string_input: Vec<&str> = contents.split_whitespace().collect();
@@ -62,7 +54,7 @@ fn compute_similarity_score(left_list: Vec<i64>, right_list: Vec<i64>) -> anyhow
 }
 
 pub fn solve(input: PathBuf, part: &str) -> anyhow::Result<i64> {
-    let contents = read_input(input).unwrap();
+    let contents = read::read_input(input).unwrap();
     let (lr, rr) = parse_contents(&contents).unwrap();
 
     match part {

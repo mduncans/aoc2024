@@ -9,16 +9,21 @@ pub struct Args {
     pub input: PathBuf,
 
     // Problem part - a or b
-    #[arg(short, long, default_value = "a", help = "Specify the problem part ('a' or 'b').")]
+    #[arg(
+        short,
+        long,
+        default_value = "a",
+        help = "Specify the problem part ('a' or 'b')."
+    )]
     pub part: String,
 
     // What day to solve
     #[command(subcommand)]
-    pub command: Commands
+    pub command: Commands,
 }
-
 
 #[derive(Subcommand, Debug)]
 pub enum Commands {
     Day1,
+    Day2,
 }

@@ -1,12 +1,13 @@
-use aoc2024::{cli::cli, days};
+use aoc2024::{cli::args, days};
 use clap::Parser;
 
 fn main() {
-    let args = cli::Args::parse();
+    let args = args::Args::parse();
     let command = args.command;
 
     let result = match command {
-        cli::Commands::Day1 => days::day1::solve(args.input, &args.part).unwrap(),
+        args::Commands::Day1 => days::day1::solve(args.input, &args.part).unwrap(),
+        args::Commands::Day2 => days::day2::solve(args.input, &args.part).unwrap(),
     };
 
     println!("{}", result);
