@@ -1,18 +1,6 @@
-use crate::core::read;
+use crate::core::utils;
 use anyhow;
 use std::path::PathBuf;
-
-fn convert_report_str_to_i64_vec(str_report: &str) -> anyhow::Result<Vec<i64>> {
-    let result: Vec<i64> = str_report
-        .split_whitespace()
-        .map(|string_num| {
-            string_num
-                .parse()
-                .unwrap_or_else(|_| panic!("Failed to parse {:?} as i64", string_num))
-        })
-        .collect();
-    Ok(result)
-}
 
 fn is_monotonic(report: &Vec<i64>) -> bool {
     let monotonic_inc = report.windows(2).all(|w| w[0] < w[1]);
@@ -60,11 +48,7 @@ fn compute_safe_reports(str_reports: &Vec<&str>, dampener: bool) -> anyhow::Resu
 
     let result = str_reports
         .iter()
-        .map(|str_report| {
-            convert_report_str_to_i64_vec(str_report).unwrap_or_else(|_| {
-                panic!("Could not convert str report: {:?} to Vec<i64>", str_report)
-            })
-        })
+        .map(|str_report| utils::str_to_veci64(str_report, "WHITESPACE").unwrap())
         .map(|report| is_safe_function(&report))
         .filter(|x| x == &true)
         .count() as i64;
@@ -73,7 +57,7 @@ fn compute_safe_reports(str_reports: &Vec<&str>, dampener: bool) -> anyhow::Resu
 }
 
 pub fn solve(input: PathBuf, part: &str) -> anyhow::Result<i64> {
-    let contents = read::read_input(input).unwrap();
+    let contents = utils::read_input(input).unwrap();
     let str_reports: Vec<&str> = contents.split("\n").collect();
 
     match part {
