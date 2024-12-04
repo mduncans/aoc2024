@@ -3,6 +3,8 @@ Usage: aoc2024 [OPTIONS] --input <INPUT> <COMMAND>
 
 Commands:
   day1  
+  day2  
+  day3  
   help  Print this message or the help of the given subcommand(s)
 
 Options:

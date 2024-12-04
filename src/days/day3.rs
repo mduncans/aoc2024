@@ -3,15 +3,35 @@ use anyhow;
 use regex::Regex;
 use std::path::PathBuf;
 
-fn find_mul_instructions(instruction: &str) -> anyhow::Result<Vec<&str>> {
+fn find_mul_instructions(memory: &str) -> anyhow::Result<Vec<&str>> {
     let re = Regex::new(r"mul\(\d{1,3},\d{1,3}\)").unwrap();
 
     let results: Vec<&str> = re
-        .captures_iter(instruction)
+        .captures_iter(memory)
         .filter_map(|caps| caps.get(0).map(|m| m.as_str()))
         .collect();
 
     Ok(results)
+}
+
+fn find_mul_instructions_with_enablement(memory: &str) -> anyhow::Result<Vec<&str>> {
+    let patterns = vec![r"do", r"don't", r"mul\(\d{1,3},\d{1,3}\)"];
+
+    let mut matches = vec![];
+
+    for pattern in patterns {
+        let re = Regex::new(pattern).unwrap();
+        for mat in re.find_iter(memory) {
+            matches.push((mat.start(), mat.as_str()));
+        }
+    }
+
+    // since do is found before don't we don't care that do is matched to don't
+    matches.sort_by_key(|k| k.0);
+
+    let result: Vec<&str> = matches.into_iter().map(|(_, mat)| mat).collect();
+
+    Ok(result)
 }
 
 fn do_instructions(instruction: &str) -> anyhow::Result<i64> {
@@ -31,15 +51,37 @@ fn do_instructions(instruction: &str) -> anyhow::Result<i64> {
     Ok(product)
 }
 
+fn do_enabled_instructions(instructions: Vec<&str>) -> anyhow::Result<i64> {
+    let mut enabled = true;
+    let mut result: i64 = 0;
+
+    for instruction in instructions {
+        if instruction == "do" {
+            enabled = true;
+        } else if instruction == "don't" {
+            enabled = false;
+        } else if enabled {
+            result += do_instructions(instruction).unwrap();
+        }
+    }
+
+    Ok(result)
+}
+
 pub fn solve(input: PathBuf, part: &str) -> anyhow::Result<i64> {
     let contents = read::read_input(input).unwrap();
-    let instructions = find_mul_instructions(&contents).unwrap();
 
     match part {
         "a" => {
+            let instructions = find_mul_instructions(&contents).unwrap();
             let result = instructions
                 .iter()
                 .fold(0, |sum, &i| sum + do_instructions(i).unwrap());
+            Ok(result)
+        }
+        "b" => {
+            let instructions = find_mul_instructions_with_enablement(&contents).unwrap();
+            let result = do_enabled_instructions(instructions).unwrap();
             Ok(result)
         }
         _ => {
