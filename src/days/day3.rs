@@ -1,4 +1,4 @@
-use crate::core::read;
+use crate::core::utils;
 use anyhow;
 use regex::Regex;
 use std::path::PathBuf;
@@ -37,14 +37,7 @@ fn find_mul_instructions_with_enablement(memory: &str) -> anyhow::Result<Vec<&st
 fn do_instructions(instruction: &str) -> anyhow::Result<i64> {
     // take index 4 to instruction.len() - 1 split at comma multiply return.
     let numbers_str = &instruction[4..instruction.len() - 1];
-    let numbers: Vec<i64> = numbers_str
-        .split(",")
-        .map(|string_num| {
-            string_num
-                .parse()
-                .unwrap_or_else(|_| panic!("Failed to parse {:?} as i64", string_num))
-        })
-        .collect();
+    let numbers = utils::str_to_veci64(numbers_str, ",").unwrap();
 
     let product: i64 = numbers.iter().product();
 
@@ -69,7 +62,7 @@ fn do_enabled_instructions(instructions: Vec<&str>) -> anyhow::Result<i64> {
 }
 
 pub fn solve(input: PathBuf, part: &str) -> anyhow::Result<i64> {
-    let contents = read::read_input(input).unwrap();
+    let contents = utils::read_input(input).unwrap();
 
     match part {
         "a" => {

@@ -1,4 +1,4 @@
-use crate::core::read;
+use crate::core::utils;
 use anyhow;
 use std::{iter::zip, path::PathBuf};
 
@@ -54,7 +54,7 @@ fn compute_similarity_score(left_list: Vec<i64>, right_list: Vec<i64>) -> anyhow
 }
 
 pub fn solve(input: PathBuf, part: &str) -> anyhow::Result<i64> {
-    let contents = read::read_input(input).unwrap();
+    let contents = utils::read_input(input).unwrap();
     let (lr, rr) = parse_contents(&contents).unwrap();
 
     match part {
