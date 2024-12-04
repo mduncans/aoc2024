@@ -108,30 +108,131 @@ fn find_xmas(x_locations: &Vec<(usize, usize)>, rows: &Vec<&str>) -> anyhow::Res
     Ok(result)
 }
 
-fn find_x_mas(letter_locations: &Vec<(usize, usize)>, rows: &Vec<&str>) -> anyhow::Result<i64> {
-    todo!()
+fn find_x_mas(m_locations: &Vec<(usize, usize)>, rows: &Vec<&str>) -> anyhow::Result<f64> {
+    // M S   M M   S M   S S
+    //  A     A     A     A
+    // M S   S S   S M   M M
+    // 1     2     3     4
+    let max_row_ind = rows.len() - 1;
+    let max_col_ind = rows[0].len() - 1;
+
+    let mut result: f64 = 0.;
+
+    // Previous solution of iterating through m locations
+    // and counting will likely lead to over count. But
+    // since there are two MAS per X, we can just add 0.5
+    // per M. There are 4 types of X-mas to check for
+
+    for (row_ind, col_ind) in m_locations {
+        // Type 1 x-mas
+        // top M
+        if row_ind <= &(max_row_ind - 2)
+            && col_ind <= &(max_col_ind - 2)
+            && is_loc_next_letter(rows, *row_ind + 2, *col_ind, 'M')
+            && is_loc_next_letter(rows, *row_ind, *col_ind + 2, 'S')
+            && is_loc_next_letter(rows, *row_ind + 1, *col_ind + 1, 'A')
+            && is_loc_next_letter(rows, *row_ind + 2, *col_ind + 2, 'S')
+        {
+            result += 0.5
+        }
+        // bottom M
+        if row_ind >= &2
+            && col_ind <= &(max_col_ind - 2)
+            && is_loc_next_letter(rows, *row_ind - 2, *col_ind, 'M')
+            && is_loc_next_letter(rows, *row_ind, *col_ind + 2, 'S')
+            && is_loc_next_letter(rows, *row_ind - 1, *col_ind + 1, 'A')
+            && is_loc_next_letter(rows, *row_ind - 2, *col_ind + 2, 'S')
+        {
+            result += 0.5
+        }
+
+        // Type 2 x-mas
+        // left M
+        if row_ind <= &(max_row_ind - 2)
+            && col_ind <= &(max_col_ind - 2)
+            && is_loc_next_letter(rows, *row_ind, *col_ind + 2, 'M')
+            && is_loc_next_letter(rows, *row_ind + 2, *col_ind, 'S')
+            && is_loc_next_letter(rows, *row_ind + 1, *col_ind + 1, 'A')
+            && is_loc_next_letter(rows, *row_ind + 2, *col_ind + 2, 'S')
+        {
+            result += 0.5
+        }
+        //right M
+        if row_ind <= &(max_row_ind - 2)
+            && col_ind >= &2
+            && is_loc_next_letter(rows, *row_ind, *col_ind - 2, 'M')
+            && is_loc_next_letter(rows, *row_ind + 2, *col_ind, 'S')
+            && is_loc_next_letter(rows, *row_ind + 1, *col_ind - 1, 'A')
+            && is_loc_next_letter(rows, *row_ind + 2, *col_ind - 2, 'S')
+        {
+            result += 0.5
+        }
+
+        // Type 3 X-mas
+        // top M
+        if row_ind <= &(max_row_ind - 2)
+            && col_ind >= &2
+            && is_loc_next_letter(rows, *row_ind + 2, *col_ind, 'M')
+            && is_loc_next_letter(rows, *row_ind, *col_ind - 2, 'S')
+            && is_loc_next_letter(rows, *row_ind + 1, *col_ind - 1, 'A')
+            && is_loc_next_letter(rows, *row_ind + 2, *col_ind - 2, 'S')
+        {
+            result += 0.5
+        }
+        // bottom M
+        if row_ind >= &2
+            && col_ind >= &2
+            && is_loc_next_letter(rows, *row_ind - 2, *col_ind, 'M')
+            && is_loc_next_letter(rows, *row_ind, *col_ind - 2, 'S')
+            && is_loc_next_letter(rows, *row_ind - 1, *col_ind - 1, 'A')
+            && is_loc_next_letter(rows, *row_ind - 2, *col_ind - 2, 'S')
+        {
+            result += 0.5
+        }
+
+        // Type 4 X-mas
+        // left M
+        if row_ind >= &2
+            && col_ind <= &(max_col_ind - 2)
+            && is_loc_next_letter(rows, *row_ind, col_ind + 2, 'M')
+            && is_loc_next_letter(rows, *row_ind - 2, *col_ind, 'S')
+            && is_loc_next_letter(rows, *row_ind - 1, *col_ind + 1, 'A')
+            && is_loc_next_letter(rows, *row_ind - 2, *col_ind + 2, 'S')
+        {
+            result += 0.5
+        }
+        // right M
+        if row_ind >= &2
+            && col_ind >= &2
+            && is_loc_next_letter(rows, *row_ind, col_ind - 2, 'M')
+            && is_loc_next_letter(rows, *row_ind - 2, *col_ind, 'S')
+            && is_loc_next_letter(rows, *row_ind - 1, *col_ind - 1, 'A')
+            && is_loc_next_letter(rows, *row_ind - 2, *col_ind - 2, 'S')
+        {
+            result += 0.5
+        }
+    }
+    Ok(result)
 }
 
 pub fn solve(input: PathBuf, part: &str) -> anyhow::Result<i64> {
     let contents = utils::read_input(input).unwrap();
     let rows: Vec<&str> = contents.split("\n").collect();
-    
+
     match part {
         "a" => {
             let x_locations = find_letter(&rows, 'X').unwrap();
             let result = find_xmas(&x_locations, &rows).unwrap();
             Ok(result)
-        },
-        "b" => {
-            let m_locations = find_letter(&rows, 'M').unwwrap();
-            let result = find_x_mas(m_locations, &rows).unwrap();
-            Ok(result)
-        },
-        _ => {
-            Ok(-1)
         }
+        "b" => {
+            let m_locations = find_letter(&rows, 'M').unwrap();
+            let float_result = find_x_mas(&m_locations, &rows).unwrap();
+
+            Ok(float_result.round() as i64)
+        }
+        _ => Ok(-1),
     }
-    
 }
 
 #[cfg(test)]
