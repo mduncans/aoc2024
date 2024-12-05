@@ -28,7 +28,7 @@ fn find_mul_instructions_with_enablement(memory: &str) -> anyhow::Result<Vec<&st
 
     // since do is found before don't we don't care that do is matched to don't
     matches.sort_by_key(|k| k.0);
-
+    
     let result: Vec<&str> = matches.into_iter().map(|(_, mat)| mat).collect();
 
     Ok(result)

@@ -10,6 +10,7 @@ fn main() {
         args::Commands::Day2 => days::day2::solve(args.input, &args.part).unwrap(),
         args::Commands::Day3 => days::day3::solve(args.input, &args.part).unwrap(),
         args::Commands::Day4 => days::day4::solve(args.input, &args.part).unwrap(),
+        args::Commands::Day5 => days::day5::solve(args.input, &args.part).unwrap(),
     };
 
     println!("{}", result);

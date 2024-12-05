@@ -32,3 +32,10 @@ pub fn str_to_veci64(numbers_str: &str, split: &str) -> anyhow::Result<Vec<i64>>
         Ok(numbers)
     }
 }
+
+pub fn split_vector_at_empty(vec: Vec<&str>) -> (Vec<&str>, Vec<&str>) {
+    let split_pos = vec.iter().position(|&x| x.is_empty()).unwrap_or(vec.len());
+    let first_half = vec[..split_pos].to_vec();
+    let second_half = vec[split_pos + 1..].to_vec(); // Skip the empty string
+    (first_half, second_half)
+}
